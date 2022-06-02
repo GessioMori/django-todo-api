@@ -9,7 +9,7 @@ SECRET_KEY = 'django-insecure-nxsjqj@z3p7bmx!6(0tetyxviw%fz!$0x3#!69u7!@f-&@f5&7
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['django-todo-api-hdm.herokuapp.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
