@@ -12,7 +12,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-todo-api-hdm.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
