@@ -8,6 +8,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 SECRET_KEY = 'django-insecure-nxsjqj@z3p7bmx!6(0tetyxviw%fz!$0x3#!69u7!@f-&@f5&7'
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 DEBUG = True
 
