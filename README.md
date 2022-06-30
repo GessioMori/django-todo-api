@@ -415,3 +415,112 @@ urlpatterns = [
 Nessa rota, **\<int:pk\>** refere-se ao **id** do todo. Para acessar essa e a rota **api/todos/**, devemos enviar, no header da requisição, a token gerada no início da sessão da mesma forma que fizemos no logout.
 
 Dessa forma uma API (bem) básica de todos estará concluída!
+
+## Fazendo o deploy da aplicação no Heroku
+
+Para fazer o deploy da aplicação no Heroku, você deve criar um arquivo com o nome **Procfile** no diretório raiz. O arquivo deve conter duas linhas:
+
+```
+web: gunicorn todoapi.wsgi
+
+release: python manage.py migrate
+```
+
+Caso sua aplicação tenha um nome diferente de **todoapi**, você deve substituir pelo mesmo:
+
+```
+web: gunicorn <NOME>.wsgi
+
+release: python manage.py migrate
+```
+
+O primeiro comando utiliza o pacote **gunicorn** para fazer o deploy no Heroku. Para utilizá-lo, você deve fazer a instalação:
+
+```console
+pipenv install gunicorn
+```
+
+Para adicionar arquivos estáticos à aplicação, você deve acrescentar, em **settings.py** a seguinte linha:
+
+```python
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+```
+
+Além disso, no mesmo arquivo, você deve adicionar os hosts permitidos. Por simplicidade, permitiremos que qualquer host hospede a aplicação:
+
+```python
+ALLOWED_HOSTS = ['*']
+```
+
+Ainda em **settings.py** iremos acrescentar algumas linhas para indicar ao Heroku como reconhecer o banco de dados. No início, acrescente a importação:
+
+```python
+import os
+```
+
+E, ao fim:
+
+```python
+if 'DATABASE_URL' in os.environ:
+    import dj_database_url
+    DATABASES = {'default': dj_database_url.config()}
+```
+
+Dois pacotes são necessários para que o Heroku trabalhe com o banco de dados. Por isso, instale:
+
+```console
+pipenv install dj-database-url
+pipenv install psycopg2
+```
+
+Para que o frontend consiga se comunicar com a API, você deve fazer as configurações de permissão de CORS (Cross-Origin Resource Sharing). Para isso, instale:
+
+```console
+pipenv install django-cors-headers
+```
+
+Então, no arquivo **settings.py**, adicione em **INSTALLED_APPS** e **MIDDLEWARE**:
+
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    # Nova linha
+    'corsheaders',
+    'todos'
+]
+```
+
+```python
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # Nova linha
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+```
+
+Ainda em **settings.py**, permita que qualquer origem se conecte à API:
+
+```python
+CORS_ALLOW_ALL_ORIGINS = True
+```
+
+Por fim, devemos criar um arquivo para indicar quais dependências devem ser instaladas. O comando para gerar tal arquivo é:
+
+```console
+pipenv run pip freeze  > requirements.txt
+```
+
+Depois desses passos sua aplicação já estará configurada para o deploy no Heroku.
