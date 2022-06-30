@@ -446,6 +446,12 @@ Para adicionar arquivos estáticos à aplicação, você deve acrescentar, em **
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 ```
 
+E você deve rodar o seguinte comando para adicionar os arquivos estáticos ao seu projeto:
+
+```console
+python manage.py collectstatic
+```
+
 Além disso, no mesmo arquivo, você deve adicionar os hosts permitidos. Por simplicidade, permitiremos que qualquer host hospede a aplicação:
 
 ```python
